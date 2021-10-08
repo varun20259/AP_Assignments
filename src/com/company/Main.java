@@ -51,6 +51,7 @@ public class Main {
         }
         void add_slot(String id){
             System.out.print("Enter number of Slots to be added: ");
+
             int slots = scanner.nextInt();
             for(int i=0;i<slots;i++){
                 System.out.print("Enter day number: ");
@@ -82,14 +83,11 @@ public class Main {
             System.out.println("Vaccine Name: "+ Vname +", Number of Doses: "+ dose + ", Gap Between Doses: " + gap);
             int x =Integer.parseInt(i)+1;
             i=""+x;
-            return;
         }
         void DisplayVaccines(){
-            int j=0;
             for(String k: vaccine.keySet()){
                 String []data=vaccine.get(k);
                 System.out.println(k+". "+data[0]);
-                return;
             }
         }
     }
@@ -109,6 +107,7 @@ public class Main {
                 "---------------------------------");
         int n =0;
         while(n!=8){
+            System.out.println("-----------------------------------------");
             System.out.print("Enter code: ");
             n = scanner.nextInt();
             if(n==1){
