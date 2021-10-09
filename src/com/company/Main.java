@@ -5,6 +5,7 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     public static HashMap<String, ArrayList<String>> Hospital = new HashMap<>();
     static HashMap<String, String[]> Citizen = new HashMap<>();
+    static HashMap<String, String[]> vaccine = new HashMap<>();
     static class citizen {
         void register_citizen() {
             System.out.print("Citizen Name: ");
@@ -74,19 +75,49 @@ public class Main {
                         System.out.print("Enter day number: ");
                         String day = scanner.next();
                         System.out.print("Enter quantity: ");
-                        String dose = scanner.next();
+                        String quantity = scanner.next();
                         System.out.println("Select Vaccine: ");
                         Vaccine v = new Vaccine();
                         v.DisplayVaccines();
                         String vac_num = scanner.next();
-                        System.out.println("Slot added by Hospital " + id + "for Day: " + day + " Available Quantity: " + dose + " of Vaccine" + vaccine.get(vac_num));
-                        String vaccine_the_hospital_has[] = {day, dose};
+                        String ab[] =vaccine.get(vac_num);
+                        System.out.println("Slot added by Hospital " + id + " for Day: " + day + " Available Quantity: " + quantity + " of Vaccine: " + ab[0]);
+                        ll.add(day);
+                        System.out.println(vac_num);
+                        ll.add(vac_num);
+                        ll.add(quantity);
                     }
-             }
+
+                break;}
+            }
+        }
+        void display_slot(String id){
+            for (String iid : Hospital.keySet()){
+                ArrayList ll=Hospital.get(iid);
+                System.out.println(ll.toArray());
+                if(id.equals(ll.get(0))){
+                    int x=1;
+                    for(int k=1;k<ll.size()-3;k+=3){
+                        String b=ll.get(k).toString();
+                        String a[]=vaccine.get(b);
+                        System.out.println(Arrays.toString(ll.toArray()));
+                        //System.out.println(Arrays.toString(a));
+                        String s=ll.get(k-1).toString();
+                        if(Integer.parseInt(s)>0){
+                            System.out.println(x);
+                            System.out.println(a[0]);
+                            System.out.println(s);
+                            System.out.println("Day"+(k+1)+": Vaccine: "+a[0]+"Available Qyt: "+s);
+                        }
+                        else{
+                            System.out.println("Day"+(k+1)+": Vaccine: "+a[0]+"Not Available");
+                        }
+
+                    }
+                }
             }
         }
     }
-        static HashMap<String, String[]> vaccine = new HashMap<>();
 
         static class Vaccine {
             static String i = "0";
@@ -156,7 +187,10 @@ public class Main {
 
                     }
                     else if (n == 6) {
-
+                        Hospital h = new Hospital();
+                        System.out.println("Enter hospital ID: ");
+                        String id= scanner.next();
+                        h.display_slot(id);
                     }
                     else if (n == 7) {
                         System.out.print("Unique Citizen id: ");
