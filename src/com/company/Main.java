@@ -1,20 +1,17 @@
 package com.company;
-
-import java.lang.reflect.Array;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import static com.company.Main.Vaccine.vaccine;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
-    //public static HashMap<String, ArrayList<String>> Hospital = new HashMap<>();
-    static HashMap<String, String[]> Citizen = new HashMap<>();
-    //static HashMap<Integer, String[]> vaccine = new HashMap<>();
     static class citizen {
+        static ArrayList<ArrayList<String>> citizen = new ArrayList<>();
         void register_citizen() {
+            ArrayList<String> citizen_data=new ArrayList<>();
             System.out.print("Citizen Name: ");
             String Cname = scanner.next();
             System.out.print("Age: ");
@@ -29,20 +26,73 @@ public class Main {
                 System.out.println("Only above 18 are allowed");
                 return;
             }
-            String[] citizen_data = {Cname, age, status, vaccine, number_of_doses_taken, due_date};
-            Citizen.put(id, citizen_data);
+            citizen_data.add(id);
+            citizen_data.add(Cname);
+            citizen_data.add(age);
+            citizen_data.add(status);
+            citizen_data.add(vaccine);
+            citizen_data.add(number_of_doses_taken);
+            citizen_data.add(due_date);
+            citizen.add(citizen_data);
             System.out.println("Citizen Name: " + Cname + ", Age: " + age + ", Unique ID: " + id + "\n" + status);
         }
 
         void show_status(String id) {
-            String[] data = Citizen.get(id);
-            System.out.println("Vaccination status: " + data[2]);
-            System.out.println("Vaccine given: " + data[3]);
-            System.out.println("Number of Doses given: " + data[4]);
-            System.out.println("Next Dose due date: " + data[5]);
+            for(int i=0;i<citizen.size();i++){
+                ArrayList<String> data=citizen.get(i);
+                if(id.equals(data.get(0))){
+                    System.out.println("Vaccination status: " + data.get(2));
+                    System.out.println("Vaccine given: " + data.get(3));
+                    System.out.println("Number of Doses given: " + data.get(4));
+                    System.out.println("Next Dose due date: " + data.get(5));
+                }
+            }
         }
 
         void set_vaccine_given(String unique_id) {
+            System.out.println("1. Search by area\n" +
+                    "2. Search by Vaccine\n" +
+                    "3. Exit");
+            System.out.print("Enter Option: ");
+            String operation = scanner.next();
+            if("1".equals(operation)){
+                System.out.print("Enter PinCode: ");
+                String pincode = scanner.next();
+                ArrayList<String> hospital_in_that_area=new ArrayList<>();
+                Hospital h = new Hospital();
+                for(int k=0;k<h.Hospitals.size();k++){
+                    ArrayList<String> a =h.Hospitals.get(k);
+                    if(pincode.equals(a.get(2))){
+                        hospital_in_that_area.add(a.get(0));
+                        hospital_in_that_area.add(a.get(1));
+                        System.out.println(a.get(0)+" "+a.get(1));
+                    }
+                }
+                for(int q=0;q<hospital_in_that_area.size();q++){
+
+                }
+            }
+            else if("2".equals(operation)){
+                System.out.print("Enter vaccine name: ");
+                String name_of_vaccine = scanner.next();
+                Hospital h2 = new Hospital();
+                ArrayList<String> hospital_that_has_vaccine=new ArrayList<>();
+                for(int k=0;k<h2.Hospitals.size();k++){
+                    ArrayList<String> a =h2.Hospitals.get(k);
+                    for(int j=4;j<a.size();j+=3){
+                        Vaccine v = new Vaccine();
+                        if(name_of_vaccine.equals(a.get(j))){
+                            // hospital_that_has_vaccine.add();
+                        }
+                    }
+                }
+            }
+            else if("3".equals(operation)){
+
+            }
+            else{
+                System.out.println("Oops!!, looks like you entered something wrong");
+            }
 
         }
     }
@@ -100,7 +150,6 @@ public class Main {
         void display_slot(String id){
             for (int i=0;i<Hospitals.size();i++){
                 ArrayList ll=Hospitals.get(i);
-                System.out.println(ll.toString());
                 if(id.equals(ll.get(0))){
                     for(int k=4;k<ll.size()-1;k+=3){
                         String b=ll.get(k).toString();
@@ -111,11 +160,9 @@ public class Main {
                                 name_of_vaccine=q.get(1);
                             }
                         }
-                        String s=ll.get(k+1).toString();
-                        String day=ll.get(k-1).toString();
+                        String s=ll.get(k-1).toString();
                         if(Integer.parseInt(s)>0){
-                            System.out.println(s);
-                            System.out.println("Day"+day+": Vaccine: "+name_of_vaccine+"Available Qyt: "+s);
+                            System.out.println("Day"+(k+1)+": Vaccine: "+name_of_vaccine+"Available Qyt: "+s);
                         }
                         else{
                             System.out.println("Day"+(k+1)+": Vaccine: "+name_of_vaccine+"Not Available");
@@ -172,6 +219,7 @@ public class Main {
         int n = 0;
         while (n != 8) {
             System.out.println("---------------------------------");
+            System.out.println("{Menu Options}");
             System.out.print("Enter code: ");
             n = scanner.nextInt();
             if (n == 1) {
@@ -182,7 +230,6 @@ public class Main {
             else if (n == 2) {
                 Hospital h = new Hospital();
                 h.add_Hospital();
-                //h.DisplayHospital();
             }
             else if (n == 3) {
                 citizen c = new citizen();
@@ -190,17 +237,19 @@ public class Main {
             }
             else if (n == 4) {
                 Hospital h = new Hospital();
-                //h.DisplayHospital();
-                System.out.println("Enter Hospital Id: ");
+                System.out.print("Enter Hospital Id: ");
                 String id = scanner.next();
                 h.add_slot(id);
             }
             else if (n == 5) {
-
+                System.out.print("Enter patient Unique ID: ");
+                String Unique_id = scanner.next();
+                citizen c = new citizen();
+                c.set_vaccine_given(Unique_id);
             }
             else if (n == 6) {
                 Hospital h = new Hospital();
-                System.out.println("Enter hospital ID: ");
+                System.out.print("Enter hospital ID: ");
                 String id= scanner.next();
                 h.display_slot(id);
             }
