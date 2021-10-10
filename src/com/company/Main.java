@@ -1,7 +1,5 @@
 package com.company;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import static com.company.Main.Vaccine.vaccine;
@@ -18,6 +16,10 @@ public class Main {
             String age = scanner.next();
             System.out.print("Unique ID: ");
             String id = scanner.next();
+            while(id.length()<12){
+                System.out.println("Enter correct Unique id:");
+                id=scanner.next();
+            }
             String status = "REGISTERED";
             String vac_num = "";
             String number_of_doses_taken = "0";
@@ -52,6 +54,15 @@ public class Main {
         }
 
         void set_vaccine_given(String unique_id) {
+            for(int q=0;q<citizen.size();q++){
+                ArrayList<String> citizen_data=citizen.get(q);
+                if (unique_id.equals(citizen_data.get(0))){
+                    if(citizen_data.get(3).equals("FULLY VACCINATED")){
+                        System.out.println("The person is fully vaccinated");
+                        return;
+                    }
+                }
+            }
             System.out.println("1. Search by area\n" +
                     "2. Search by Vaccine\n" +
                     "3. Exit");
@@ -72,78 +83,54 @@ public class Main {
                         count++;
                     }
                 }
-                if(count!=0){
-                    System.out.print("Enter hospital id: ");
-                    String id_of_the_hospital= scanner.next();
-                    h.display_slot(id_of_the_hospital);
-                    System.out.println("Choose slot: ");
-                    String slot = scanner.next();
-                    Vaccine v = new Vaccine();
-                    for(int y=0;y<h.Hospitals.size();y++){
-                        ArrayList<String> x =h.Hospitals.get(y);
-                        if(id_of_the_hospital.equals(x.get(0))){
-                            System.out.println("got hospital");
-                            String vac_num=x.get(3*Integer.parseInt(slot)+1);
-                            System.out.println(vac_num);
-                            Integer quantity= Integer.parseInt(x.get(3*Integer.parseInt(slot)+2));
-                            if(quantity!=0){
-                                for(int q=0;q<citizen.size();q++){
-                                    ArrayList<String> cit=citizen.get(q);
-                                    if(unique_id.equals(cit.get(0))){
-                                        String name_of_person=cit.get(1);
-                                        ArrayList<String>data_of_vaccine=v.vaccine.get(Integer.parseInt(vac_num));
-                                        if(Integer.parseInt(data_of_vaccine.get(2))==Integer.parseInt(cit.get(5))){
-                                            cit.set(3,"FULLY VACCINATED");
-                                            cit.set(6,"FULLY VACCINATED");
-                                            System.out.println(cit.get(1)+" vaccinated with "+data_of_vaccine.get(1));
-                                            Integer the_amount_of_vaccines_left=Integer.parseInt(x.get(3*Integer.parseInt(slot)+2))-1;
-                                            x.set(3*Integer.parseInt(slot)+2,String.valueOf(the_amount_of_vaccines_left));
-                                        }
-                                        else if(Integer.parseInt(data_of_vaccine.get(2))>Integer.parseInt(cit.get(5))){
-                                            cit.set(3,"PARTIALLY VACCINATED");
-                                            String number_of_doses_taken=cit.get(5);
-                                            String updated_doses=String.valueOf(Integer.parseInt(number_of_doses_taken)+1);
-                                            cit.set(5,updated_doses);
-                                            String gap_needed=data_of_vaccine.get(3);
-                                            String day_on_which_vaccine_is_give=x.get(3*Integer.parseInt(slot));
-                                            Integer updated_day_on_which_vaccine_is_give=Integer.parseInt(x.get(3*Integer.parseInt(slot)))+Integer.parseInt(gap_needed);
-                                            cit.set(7,String.valueOf(Integer.parseInt(x.get(3*Integer.parseInt(slot)))));
-                                            cit.set(6,String.valueOf(updated_day_on_which_vaccine_is_give));
-                                            cit.set(4,data_of_vaccine.get(1));
-                                            System.out.println(cit.get(1)+" vaccinated with "+data_of_vaccine.get(1));
-                                            Integer the_amount_of_vaccines_left=Integer.parseInt(x.get(3*Integer.parseInt(slot)+2))-1;
-                                            x.set(3*Integer.parseInt(slot)+2,String.valueOf(the_amount_of_vaccines_left));
-                                        }
-                                        else{
-                                            System.out.println("The person is fully vaccinated");
-                                        }
-                                    }
-                                }
-                            }
-                            else{
-                                System.out.println("Sorry, no vaccines left");
-                            }
-                        }
-                    }
+                if(count>0){
+                    System.out.println("Enter hospital id: ");
+                    String hospital_id=scanner.next();
+                    citizen_to_hospital(hospital_id,unique_id,count);
                 }
+
                 else{
                     System.out.println("No hospital in this area");
                 }
-
             }
             else if("2".equals(operation)){
                 System.out.print("Enter vaccine name: ");
                 String name_of_vaccine = scanner.next();
                 Hospital h2 = new Hospital();
                 ArrayList<String> hospital_that_has_vaccine=new ArrayList<>();
+                int count=0;
                 for(int k=0;k<h2.Hospitals.size();k++){
                     ArrayList<String> a =h2.Hospitals.get(k);
                     for(int j=4;j<a.size();j+=3){
                         Vaccine v = new Vaccine();
-                        if(name_of_vaccine.equals(a.get(j))){
-
+                        String vac_num="";
+                        for(int u=0;u<v.vaccine.size();u++){
+                            ArrayList<String> temp = v.vaccine.get(u);
+                            if(name_of_vaccine.equals(temp.get(1))){
+                                vac_num=temp.get(0);
+                                break;
+                            }
+                        }
+                        if(vac_num.equals(a.get(j))){
+                            if(Integer.parseInt(a.get(j+1))>0){
+                                if(!hospital_that_has_vaccine.contains(a.get(0))){
+                                    hospital_that_has_vaccine.add(a.get(0));
+                                    hospital_that_has_vaccine.add(a.get(1));
+                                    System.out.println(a.get(0)+" "+a.get(1));
+                                    count++;
+                                }
+                            }
                         }
                     }
+                }
+                if(count>0){
+                    System.out.println("Enter hospital id: ");
+                    String hospital_id=scanner.next();
+                    citizen_to_hospital(hospital_id,unique_id,count);
+                }
+
+                else{
+                    System.out.println("Vaccine unavailable");
                 }
             }
             else if("3".equals(operation)){
@@ -153,7 +140,69 @@ public class Main {
                 System.out.println("Oops!!, looks like you entered something wrong");
             }
         }
+        void citizen_to_hospital(String id_of_the_hospital,String unique_id, int count) {
+            Hospital h = new Hospital();
+            h.display_slot(id_of_the_hospital);
+            System.out.println("Choose slot: ");
+            String slot = scanner.next();
+            for(int w=0;w<h.Hospitals.size();w++){
+                ArrayList<String> temp = h.Hospitals.get(w);
+                if(temp.size()<3+Integer.parseInt(slot)*3){
+                    System.out.println("Incorrect data!!!");
+                    return;
+                }
+            }
+            Vaccine v = new Vaccine();
+            for (int y = 0; y < h.Hospitals.size(); y++) {
+                ArrayList<String> x = h.Hospitals.get(y);
+                if (id_of_the_hospital.equals(x.get(0))) {
+                    String vac_num = x.get(3 * Integer.parseInt(slot) + 1);
+                    Integer quantity = Integer.parseInt(x.get(3 * Integer.parseInt(slot) + 2));
+                    if (quantity != 0) {
+                        for (int q = 0; q < citizen.size(); q++) {
+                            ArrayList<String> cit = citizen.get(q);
+                            if (unique_id.equals(cit.get(0))) {
+                                String name_of_person = cit.get(1);
+                                ArrayList<String> data_of_vaccine = v.vaccine.get(Integer.parseInt(vac_num));
+
+                                if (Integer.parseInt(data_of_vaccine.get(2)) == Integer.parseInt(cit.get(5))+1) {
+                                    cit.set(3, "FULLY VACCINATED");
+                                    cit.set(6, "FULLY VACCINATED");
+                                    System.out.println(cit.get(1) + " vaccinated with " + data_of_vaccine.get(1));
+                                    Integer the_amount_of_vaccines_left = Integer.parseInt(x.get(3 * Integer.parseInt(slot) + 2)) - 1;
+                                    cit.set(4, data_of_vaccine.get(1));
+                                    cit.set(5, data_of_vaccine.get(2));
+                                    x.set(3 * Integer.parseInt(slot) + 2, String.valueOf(the_amount_of_vaccines_left));
+                                }
+                                else if (Integer.parseInt(data_of_vaccine.get(2)) > Integer.parseInt(cit.get(5))+1) {
+                                    cit.set(3, "PARTIALLY VACCINATED");
+                                    String number_of_doses_taken = cit.get(5);
+                                    String updated_doses = String.valueOf(Integer.parseInt(number_of_doses_taken) + 1);
+                                    cit.set(5, updated_doses);
+                                    String gap_needed = data_of_vaccine.get(3);
+                                    String day_on_which_vaccine_is_give = x.get(3 * Integer.parseInt(slot));
+                                    Integer updated_day_on_which_vaccine_is_give = Integer.parseInt(x.get(3 * Integer.parseInt(slot))) + Integer.parseInt(gap_needed);
+                                    cit.set(7, String.valueOf(Integer.parseInt(x.get(3 * Integer.parseInt(slot)))));
+                                    cit.set(6, String.valueOf(updated_day_on_which_vaccine_is_give));
+                                    cit.set(4, data_of_vaccine.get(1));
+                                    System.out.println(cit.get(1) + " vaccinated with " + data_of_vaccine.get(1));
+                                    Integer the_amount_of_vaccines_left = Integer.parseInt(x.get(3 * Integer.parseInt(slot) + 2)) - 1;
+                                    x.set(3 * Integer.parseInt(slot) + 2, String.valueOf(the_amount_of_vaccines_left));
+                                }
+
+                            }
+                        }
+                    } else {
+                        System.out.println("Sorry, no vaccines left");
+                    }
+                }
+            }
+        }
+        void validity(String vac_num,String due_date,ArrayList<String>a){
+
+        }
     }
+
 
     static class Hospital {
         static ArrayList<ArrayList<String>> Hospitals = new ArrayList<>();
@@ -163,6 +212,10 @@ public class Main {
             String Hname = scanner.next();
             System.out.print("PinCode: ");
             String PinCode = scanner.next();
+            while(PinCode.length()<6){
+                System.out.print("Enter correct PinCode");
+                PinCode= scanner.next();
+            }
             int id = (int) (Math.random() * 1000000);
             String HosId= String.valueOf(id);
             Hospital__data.add(HosId);
@@ -303,6 +356,10 @@ public class Main {
             else if (n == 5) {
                 System.out.print("Enter patient Unique ID: ");
                 String Unique_id = scanner.next();
+                while(Unique_id.length()<12){
+                    System.out.print("Enter correct patient Unique ID, again: ");
+                    Unique_id = scanner.next();
+                }
                 citizen c = new citizen();
                 c.set_vaccine_given(Unique_id);
             }
