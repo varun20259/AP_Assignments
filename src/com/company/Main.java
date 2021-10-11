@@ -215,9 +215,11 @@ class citizen {
         String slot = scanner.next();
         for (int w = 0; w < h.Hospitals.size(); w++) {
             ArrayList<String> temp = h.Hospitals.get(w);
-            if (temp.size() < 3+ Integer.parseInt(slot) * 3) {
-                System.out.println("Incorrect data!!!");
-                return;
+            if(temp.get(0).equals(id_of_the_hospital)){
+                if (temp.size() < 3+ Integer.parseInt(slot) * 3) {
+                    System.out.println("Incorrect data!!!");
+                    return;
+                }
             }
         }
         Vaccine v = new Vaccine();
