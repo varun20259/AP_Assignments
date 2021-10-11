@@ -84,6 +84,13 @@ class citizen {
         String age = scanner.next();
         System.out.print("Unique ID: ");
         String id = scanner.next();
+        for(int y=0;y<citizen.size();y++) {
+            ArrayList<String> temp = citizen.get(y);
+            while(temp.contains(id)){
+                System.out.println("Same id already present, please enter another id: ");
+                id = scanner.next();
+            }
+        }
         while (id.length() < 12) {
             System.out.println("Enter correct Unique id:");
             id = scanner.next();
@@ -217,7 +224,7 @@ class citizen {
             ArrayList<String> temp = h.Hospitals.get(w);
             if(temp.get(0).equals(id_of_the_hospital)){
                 if (temp.size() < 3+ Integer.parseInt(slot) * 3) {
-                    System.out.println("Incorrect data!!!");
+                    System.out.println("Incorrect data !!!");
                     return;
                 }
             }
@@ -322,7 +329,6 @@ class isInteger {
         } catch(NullPointerException e) {
             return false;
         }
-        // only got here if we didn't return false
         return true;
     }
 
@@ -408,8 +414,3 @@ class Hospital extends Vaccine {
         }
     }
 }
-
-
-
-
-
