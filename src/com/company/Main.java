@@ -23,8 +23,8 @@ public class Main {
             String status = "REGISTERED";
             String vac_num = "";
             String number_of_doses_taken = "0";
-            String due_date = "";
-            String previous_date = "";
+            String due_date = "0";
+            String previous_date = "0";
             if (Integer.parseInt(age) < 18) {
                 System.out.println("Only above 18 are allowed");
                 return;
@@ -163,8 +163,16 @@ public class Main {
                             ArrayList<String> cit = citizen.get(q);
                             if (unique_id.equals(cit.get(0))) {
                                 String name_of_person = cit.get(1);
+                                if(!vac_num.equals(cit.get(4)) && Integer.parseInt(cit.get(5))>0){
+                                    System.out.println("ERROR, the person can not take 2 different vaccines");
+                                    return;
+                                }
+                                System.out.println("vac_num "+vac_num);
+                                System.out.println(cit.toString());
+                                if(Integer.parseInt(x.get(3 * Integer.parseInt(slot)))<Integer.parseInt(cit.get(7)) && Integer.parseInt(cit.get(5))>0){
+                                    System.out.println("ERROR, you can not book your next dose, before your due date");
+                                }
                                 ArrayList<String> data_of_vaccine = v.vaccine.get(Integer.parseInt(vac_num));
-
                                 if (Integer.parseInt(data_of_vaccine.get(2)) == Integer.parseInt(cit.get(5))+1) {
                                     cit.set(3, "FULLY VACCINATED");
                                     cit.set(6, "FULLY VACCINATED");
@@ -189,17 +197,15 @@ public class Main {
                                     Integer the_amount_of_vaccines_left = Integer.parseInt(x.get(3 * Integer.parseInt(slot) + 2)) - 1;
                                     x.set(3 * Integer.parseInt(slot) + 2, String.valueOf(the_amount_of_vaccines_left));
                                 }
-
+                                System.out.println(cit.toString());
                             }
                         }
-                    } else {
+                    }
+                    else {
                         System.out.println("Sorry, no vaccines left");
                     }
                 }
             }
-        }
-        void validity(String vac_num,String due_date,ArrayList<String>a){
-
         }
     }
 
@@ -295,8 +301,12 @@ public class Main {
             String Vname = scanner.next();
             System.out.print("Number of Doses: ");
             String dose = scanner.next();
+            while(!isInteger(dose)){
+                System.out.print("Please enter correct data: ");System.out.print("Number of Doses: ");dose=scanner.next();}
             System.out.print("Gap between Doses: ");
             String gap = scanner.next();
+            while(!isInteger(gap)){
+                System.out.print("Please enter correct data: ");System.out.print("Gap between Doses: ");gap=scanner.next();}
             vaccine_data.add(i);
             vaccine_data.add(Vname);
             vaccine_data.add(dose);
@@ -314,6 +324,17 @@ public class Main {
             }
         }
 
+    }
+    static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
     public static void main(String[] args) {
         Main m = new Main();
